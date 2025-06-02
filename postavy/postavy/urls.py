@@ -1,3 +1,4 @@
+# postavy/urls.py
 """
 URL configuration for postavy project.
 
@@ -15,8 +16,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include # include je potřeba pro zahrnutí URL z jiných "aplikací"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Všechny URL začínající 'characters/' budou nyní směřovány do characters/urls.py
+    path('characters/', include('characters.urls', namespace='characters')),
+    # path('', include('characters.urls', namespace='characters_root')), # aby '' vedlo na characters.home_page
 ]

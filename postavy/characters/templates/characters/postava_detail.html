@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        header { background-color: #333; color: white; padding: 1em 0; text-align: center; }
+        nav a { margin: 0 10px; color: #ddd; text-decoration: none; }
+        nav a:hover { color: white; }
+        .container { max-width: 960px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .detail-item { margin-bottom: 10px; }
+        .detail-item strong { display: inline-block; width: 150px; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .actions a { margin-right: 10px; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 4px; text-decoration: none; }
+        .actions a.delete { background-color: #dc3545; }
+        .actions a:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Přehled D&D Postav</h1>
+        <nav>
+            <a href="{% url 'characters:home_page' %}">Domů</a>
+            <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>{{ postava.jmeno }}</h1>
+        <div class="detail-item"><strong>Rasa:</strong> {{ postava.rasa }}</div>
+        <div class="detail-item"><strong>Třída:</strong> {{ postava.trida }}</div>
+        <div class="detail-item"><strong>Úroveň:</strong> {{ postava.uroven }}</div>
+        <div class="detail-item"><strong>Síla:</strong> {{ postava.sila|default:"Nezadáno" }}</div>
+        <div class="detail-item"><strong>Aktivní:</strong> {% if postava.je_aktivni %}Ano{% else %}Ne{% endif %}</div>
+        <div class="detail-item"><strong>Datum vytvoření:</strong> {{ postava.datum_vytvoreni|date:"d.m.Y H:i" }}</div>
+        
+        {% if postava.zivotopis %}
+            <div class="detail-item">
+                <strong>Životopis:</strong>
+                <p style="margin-top: 5px;">{{ postava.zivotopis|linebreaksbr }}</p>
+            </div>
+        {% else %}
+            <div class="detail-item"><strong>Životopis:</strong> Nebyl zadán.</div>
+        {% endif %}
+        
+        <hr>
+        <p><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
+
+        <div class="actions" style="margin-top: 20px;">
+            </div>
+    </div>
+
+    <footer>
+        <p style="text-align:center; margin-top: 30px; font-size: 0.9em; color: #777;">
+            Semestrální projekt Django | {% now "Y" %}
+        </p>
+    </footer>
+</body>
+</html>
