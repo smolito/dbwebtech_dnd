@@ -19,7 +19,8 @@
         <nav>
             <a href="{% url 'characters:home_page' %}">Domů</a>
             <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
-            </nav>
+            <a href="{% url 'characters:postava_create' %}">Přidat Postavu</a>
+        </nav>
     </header>
 
     <div class="container">
@@ -27,6 +28,7 @@
         <p>Vítej v aplikaci pro správu tvých Dungeons & Dragons postav!</p>
         <p>Aktuálně je v databázi <strong>{{ pocet_postav }}</strong> postav.</p>
         <p><a href="{% url 'characters:postava_list' %}">Zobrazit seznam všech postav</a></p>
+        <p><a href="{% url 'characters:postava_create' %}">Přidat novou postavu</a></p> </div>
     </div>
 
     <footer>
