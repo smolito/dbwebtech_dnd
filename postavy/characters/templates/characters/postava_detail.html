@@ -48,11 +48,16 @@
             <div class="detail-item"><strong>Životopis:</strong> Nebyl zadán.</div>
         {% endif %}
         
-        <hr>
-        <p><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
+        <div class="container">
+            <h1>{{ postava.jmeno }}</h1>
+            <hr>
+            <p><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
 
-        <div class="actions" style="margin-top: 20px;">
+            <div class="actions" style="margin-top: 20px;">
+                <a href="{% url 'characters:postava_update' pk=postava.pk %}" style="background-color: #ffc107; color: #212529;">Upravit</a>
+                <a href="{% url 'characters:postava_delete' pk=postava.pk %}" class="delete" style="background-color: #dc3545; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none;">Smazat</a>
             </div>
+        </div>
     </div>
 
     <footer>

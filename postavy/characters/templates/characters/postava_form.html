@@ -45,10 +45,12 @@
     </header>
 
     <div class="container">
-        <h1>{{ page_title }}</h1>
+        <h1>{{ page_title }}</h1> <form method="post" novalidate> <!-- Pokud je formulář pro úpravu postavy, zobrazíme název -->
         <form method="post" novalidate>
             <!-- Django vyžaduje, klíčový pro bezpečnost viz poslední přednáška -->
-            {% csrf_token %} {% for field in form %}
+            {% csrf_token %}
+            
+            {% for field in form %}
                 <div class="form-field-container">
                     {{ field.label_tag }}
                     {{ field }}
@@ -73,9 +75,11 @@
                 </ul>
             {% endif %}
             
-            <button type="submit">Uložit postavu</button>
+            <button type="submit">{{ form_action_text|default:"Uložit postavu" }}</button>
         </form>
-        <p style="margin-top: 20px;"><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
+        {% if postava %} <p style="margin-top: 20px;"><a href="{% url 'characters:postava_detail' pk=postava.pk %}">&laquo; Zpět na detail postavy</a></p>
+        {% else %} <p style="margin-top: 20px;"><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
+        {% endif %}
     </div>
 
     <footer>
