@@ -1,40 +1,18 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        header { background-color: #333; color: white; padding: 1em 0; text-align: center; }
-        nav a { margin: 0 10px; color: #ddd; text-decoration: none; }
-        nav a:hover { color: white; }
-        .container { max-width: 960px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h2 { color: #333; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Přehled D&D Postav</h1>
-        <nav>
-            <a href="{% url 'characters:home_page' %}">Domů</a>
-            <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
-            <a href="{% url 'characters:postava_create' %}">Přidat Postavu</a>
-        </nav>
-    </header>
+{% extends "characters/base.html" %}
 
-    <div class="container">
-        <h2>{{ page_title }}</h2>
-        <p>Vítej v aplikaci pro správu tvých Dungeons & Dragons postav!</p>
+{% block title %}{{ page_title }} - Přehled D&D Postav{% endblock title %}
+
+{% block content %}
+<div class="px-4 py-5 my-5 text-center">
+    <img class="d-block mx-auto mb-4" src="https://placehold.co/72x57/007bff/white?text=D%26D" alt="[Logo D&D]" width="72" height="57">
+    <h1 class="display-5 fw-bold text-body-emphasis">{{ page_title }}</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">Jednoduchý nástroj pro sledování tvých hrdinů a jejich dobrodružství.</p>
         <p>Aktuálně je v databázi <strong>{{ pocet_postav }}</strong> postav.</p>
-        <p><a href="{% url 'characters:postava_list' %}">Zobrazit seznam všech postav</a></p>
-        <p><a href="{% url 'characters:postava_create' %}">Přidat novou postavu</a></p> </div>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'characters:postava_list' %}" class="btn btn-primary btn-lg px-4 gap-3">Zobrazit seznam postav</a>
+            <a href="{% url 'characters:postava_create' %}" class="btn btn-outline-secondary btn-lg px-4">Přidat novou postavu</a>
+        </div>
     </div>
-
-    <footer>
-        <p style="text-align:center; margin-top: 30px; font-size: 0.9em; color: #777;">
-            Semestrální projekt Django | {% now "Y" %}
-        </p>
-    </footer>
-</body>
-</html>
+</div>
+{% endblock content %}

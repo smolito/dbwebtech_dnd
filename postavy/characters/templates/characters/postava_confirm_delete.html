@@ -1,60 +1,27 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        header { background-color: #333; color: white; padding: 1em 0; text-align: center; }
-        nav a { margin: 0 10px; color: #ddd; text-decoration: none; }
-        nav a:hover { color: white; }
-        .container { max-width: 700px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #dc3545; } /* Červená pro varování */
-        .confirm-buttons button, .confirm-buttons a {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            text-decoration: none;
-            margin-right: 10px;
-        }
-        .confirm-buttons button[type="submit"] { background-color: #dc3545; color: white; }
-        .confirm-buttons button[type="submit"]:hover { background-color: #c82333; }
-        .confirm-buttons a { background-color: #6c757d; color: white; }
-        .confirm-buttons a:hover { background-color: #5a6268; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Přehled D&D Postav</h1>
-        <nav>
-            <a href="{% url 'characters:home_page' %}">Domů</a>
-            <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
-            {% if user.is_authenticated %} <a href="{% url 'characters:postava_create' %}">Přidat Postavu</a>
-            {% endif %}
-        </nav>
-    </header>
+{% extends "characters/base.html" %}
 
-    <div class="container">
-        <h1>{{ page_title }}</h1>
-        <p>Opravdu si přejete smazat postavu <strong>"{{ postava.jmeno }}"</strong>?</p>
-        <p>Tato akce je nevratná.</p>
+{% block title %}{{ page_title }} - Přehled D&D Postav{% endblock title %}
 
-        <form method="post">
-            {% csrf_token %}
-            <div class="confirm-buttons" style="margin-top: 20px;">
-                <button type="submit">Ano, smazat</button>
-                <a href="{% url 'characters:postava_detail' pk=postava.pk %}">Ne, zrušit</a>
-            </div>
-        </form>
-    </div>
+{% block content %}
+<div class="text-center">
+    <h1 class="text-danger">{{ page_title }}</h1>
+    <p class="lead">Opravdu si přejete smazat postavu <strong>"{{ postava.jmeno }}"</strong>?</p>
+    <p>Tato akce je nevratná.</p>
 
-    <footer>
-        <p style="text-align:center; margin-top: 30px; font-size: 0.9em; color: #777;">
-            Semestrální projekt Django | {% now "Y" %}
-        </p>
-    </footer>
-</body>
-</html>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-lg me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill me-2" viewBox="0 0 16 16">
+                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+            </svg>
+            Ano, smazat
+        </button>
+        <a href="{% url 'characters:postava_detail' pk=postava.pk %}" class="btn btn-secondary btn-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill me-2" viewBox="0 0 16 16">
+                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+            </svg>
+            Ne, zrušit
+        </a>
+    </form>
+</div>
+{% endblock content %}

@@ -1,56 +1,38 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        header { background-color: #333; color: white; padding: 1em 0; text-align: center; }
-        nav a { margin: 0 10px; color: #ddd; text-decoration: none; }
-        nav a:hover { color: white; }
-        .container { max-width: 960px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        ul { list-style-type: none; padding: 0; }
-        li { background-color: #fff; border: 1px solid #ddd; margin-bottom: 10px; padding: 15px; border-radius: 4px; }
-        li:hover { background-color: #f9f9f9; }
-        a { color: #007bff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .postava-info { font-size: 0.9em; color: #555; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Přehled D&D Postav</h1>
-        <nav>
-            <a href="{% url 'characters:home_page' %}">Domů</a>
-            <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
-            <a href="{% url 'characters:postava_create' %}">Přidat Postavu</a>
-        </nav>
-    </header>
+{% extends "characters/base.html" %}
 
-    <div class="container">
-        <h1>{{ page_title }}</h1>
-        <p><a href="{% url 'characters:postava_create' %}" style="display: inline-block; margin-bottom: 20px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">Přidat novou postavu</a></p> {% if postavy %}
-            <ul>
-                {% for postava in postavy %}
-                    <li>
-                        <h2><a href="{% url 'characters:postava_detail' pk=postava.pk %}">{{ postava.jmeno }}</a></h2>
-                        <p class="postava-info">{{ postava.rasa }} {{ postava.trida }}, Úroveň {{ postava.uroven }}</p>
-                        {% if postava.zivotopis %}
-                            <p>{{ postava.zivotopis|truncatewords:20 }}</p>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Zatím nebyly přidány žádné postavy.</p>
-        {% endif %}
+{% block title %}{{ page_title }} - Přehled D&D Postav{% endblock title %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ page_title }}</h1>
+    <a href="{% url 'characters:postava_create' %}" class="btn btn-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill me-2" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+        </svg>
+        Přidat novou postavu
+    </a>
+</div>
+
+{% if postavy %}
+    <div class="list-group">
+        {% for postava in postavy %}
+        <a href="{% url 'characters:postava_detail' pk=postava.pk %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ postava.jmeno }}</h5>
+                <small class="text-muted">{{ postava.datum_vytvoreni|date:"d.m.Y" }}</small>
+            </div>
+            <p class="mb-1">{{ postava.rasa }} {{ postava.trida }}, Úroveň {{ postava.uroven }}</p>
+            {% if postava.zivotopis %}
+                <small class="text-muted">{{ postava.zivotopis|truncatewords:25 }}</small>
+            {% else %}
+                <small class="text-muted"><em>Žádný životopis nebyl zadán.</em></small>
+            {% endif %}
+        </a>
+        {% endfor %}
     </div>
-    <footer>
-        <p style="text-align:center; margin-top: 30px; font-size: 0.9em; color: #777;">
-            Semestrální projekt Django | {% now "Y" %}
-        </p>
-    </footer>
-</body>
-</html>
+{% else %}
+    <div class="alert alert-info" role="alert">
+        Zatím nebyly přidány žádné postavy. <a href="{% url 'characters:postava_create' %}" class="alert-link">Můžeš být první!</a>
+    </div>
+{% endif %}
+{% endblock content %}

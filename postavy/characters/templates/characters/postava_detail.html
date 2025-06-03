@@ -1,69 +1,66 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        header { background-color: #333; color: white; padding: 1em 0; text-align: center; }
-        nav a { margin: 0 10px; color: #ddd; text-decoration: none; }
-        nav a:hover { color: white; }
-        .container { max-width: 960px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        .detail-item { margin-bottom: 10px; }
-        .detail-item strong { display: inline-block; width: 150px; }
-        a { color: #007bff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .actions a { margin-right: 10px; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 4px; text-decoration: none; }
-        .actions a.delete { background-color: #dc3545; }
-        .actions a:hover { opacity: 0.9; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Přehled D&D Postav</h1>
-        <nav>
-            <a href="{% url 'characters:home_page' %}">Domů</a>
-            <a href="{% url 'characters:postava_list' %}">Seznam Postav</a>
-            <a href="{% url 'characters:postava_create' %}">Přidat Postavu</a>
-        </nav>
-    </header>
+{% extends "characters/base.html" %}
 
-    <div class="container">
-        <h1>{{ postava.jmeno }}</h1>
-        <div class="detail-item"><strong>Rasa:</strong> {{ postava.rasa }}</div>
-        <div class="detail-item"><strong>Třída:</strong> {{ postava.trida }}</div>
-        <div class="detail-item"><strong>Úroveň:</strong> {{ postava.uroven }}</div>
-        <div class="detail-item"><strong>Síla:</strong> {{ postava.sila|default:"Nezadáno" }}</div>
-        <div class="detail-item"><strong>Aktivní:</strong> {% if postava.je_aktivni %}Ano{% else %}Ne{% endif %}</div>
-        <div class="detail-item"><strong>Datum vytvoření:</strong> {{ postava.datum_vytvoreni|date:"d.m.Y H:i" }}</div>
-        
+{% block title %}{{ page_title }} - Přehled D&D Postav{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-3">{{ postava.jmeno }}</h1>
+        <dl class="row">
+            <dt class="col-sm-3">Rasa:</dt>
+            <dd class="col-sm-9">{{ postava.rasa }}</dd>
+
+            <dt class="col-sm-3">Třída:</dt>
+            <dd class="col-sm-9">{{ postava.trida }}</dd>
+
+            <dt class="col-sm-3">Úroveň:</dt>
+            <dd class="col-sm-9">{{ postava.uroven }}</dd>
+
+            <dt class="col-sm-3">Síla:</dt>
+            <dd class="col-sm-9">{{ postava.sila|default:"Nezadáno" }}</dd>
+
+            <dt class="col-sm-3">Aktivní:</dt>
+            <dd class="col-sm-9">{% if postava.je_aktivni %}Ano{% else %}Ne{% endif %}</dd>
+
+            <dt class="col-sm-3">Datum vytvoření:</dt>
+            <dd class="col-sm-9">{{ postava.datum_vytvoreni|date:"d.m.Y H:i" }}</dd>
+        </dl>
+
         {% if postava.zivotopis %}
-            <div class="detail-item">
-                <strong>Životopis:</strong>
-                <p style="margin-top: 5px;">{{ postava.zivotopis|linebreaksbr }}</p>
-            </div>
+            <h4>Životopis:</h4>
+            <p class="text-muted" style="white-space: pre-wrap;">{{ postava.zivotopis|linebreaksbr }}</p>
         {% else %}
-            <div class="detail-item"><strong>Životopis:</strong> Nebyl zadán.</div>
+            <p class="text-muted"><em>Životopis nebyl zadán.</em></p>
         {% endif %}
-        
-        <div class="container">
-            <h1>{{ postava.jmeno }}</h1>
-            <hr>
-            <p><a href="{% url 'characters:postava_list' %}">&laquo; Zpět na seznam postav</a></p>
-
-            <div class="actions" style="margin-top: 20px;">
-                <a href="{% url 'characters:postava_update' pk=postava.pk %}" style="background-color: #ffc107; color: #212529;">Upravit</a>
-                <a href="{% url 'characters:postava_delete' pk=postava.pk %}" class="delete" style="background-color: #dc3545; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none;">Smazat</a>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Akce</h5>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'characters:postava_update' pk=postava.pk %}" class="btn btn-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                        </svg>
+                        Upravit
+                    </a>
+                    <a href="{% url 'characters:postava_delete' pk=postava.pk %}" class="btn btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill me-2" viewBox="0 0 16 16">
+                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                        </svg>
+                        Smazat
+                    </a>
+                </div>
+                <hr>
+                <a href="{% url 'characters:postava_list' %}" class="btn btn-outline-secondary w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill me-2" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                    </svg>
+                    Zpět na seznam
+                </a>
             </div>
         </div>
     </div>
-
-    <footer>
-        <p style="text-align:center; margin-top: 30px; font-size: 0.9em; color: #777;">
-            Semestrální projekt Django | {% now "Y" %}
-        </p>
-    </footer>
-</body>
-</html>
+</div>
+{% endblock content %}
