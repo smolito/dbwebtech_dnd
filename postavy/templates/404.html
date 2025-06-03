@@ -1,0 +1,29 @@
+{% extends "characters/base.html" %} {# Dědíme z naší základní šablony #}
+
+{% block title %}Stránka Nenalezena (404){% endblock title %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <img src="https://placehold.co/150x150/ffc107/343a40?text=404" alt="[Obrázek chyby 404]" class="mb-4" style="width: 150px; height: 150px; border-radius: 50%;">
+    <h1 class="display-1 text-warning">404</h1>
+    <h2 class="mb-4">Stránka Nenalezena</h2>
+    <p class="lead mb-4">
+        Omlouváme se, ale stránka, kterou hledáte, neexistuje, byla přesunuta nebo je dočasně nedostupná.
+    </p>
+    <p>Možná jste zadali adresu špatně, nebo následovali neplatný odkaz.</p>
+    <div class="mt-4">
+        <a href="{% url 'characters:home_page' %}" class="btn btn-primary btn-lg me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill me-2" viewBox="0 0 16 16">
+                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+            </svg>
+            Vrátit se na domovskou stránku
+        </a>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill me-2" viewBox="0 0 16 16">
+                 <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+            </svg>
+            Zpět na předchozí stránku
+        </a>
+    </div>
+</div>
+{% endblock content %}
