@@ -4,11 +4,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Postava
 from .forms import PostavaForm
 from django.contrib import messages
+from collections import deque
 
 def postava_list(request):
     """
     View pro zobrazení seznamu všech postav.
     """
+    # Načtení informace o poslední akci ze session
+    last_actioned_char_name = request.session.pop('last_actioned_char_name', None)
+    last_action_type = request.session.pop('last_action_type', None)
+
     postavy = Postava.objects.all().order_by('jmeno') # Získání všech postav, seřazených podle jména
     context = {
         'postavy': postavy,
@@ -23,19 +28,31 @@ def postava_detail(request, pk):
     'pk' (primary key)
     """
     postava = get_object_or_404(Postava, pk=pk) # Získá postavu podle id, nebo vrátí 404 pokud neexistuje
+
+    # správa seznamu naposledy prohlížených postav
+    recently_viewed = request.session.get('recently_viewed_characters', [])
+
+    # data pro aktuální postavu
+    current_char_info = {'id': postava.pk, 'jmeno': postava.jmeno}
+
+    # odstranit postavu ze seznamu, pokud tam už je, abychom ji přidali na začátek
+    recently_viewed = [char for char in recently_viewed if char['id'] != postava.pk]
+
+    # přidání aktuální postavy na začátek seznamu (jako deque pro snadné přidání na začátek)
+    temp_deque = deque(recently_viewed, maxlen=5) # Omezíme na 5 položek
+    temp_deque.appendleft(current_char_info)
+    request.session['recently_viewed_characters'] = list(temp_deque)
+
     context = {
         'postava': postava,
         'page_title': f"Detail Postavy: {postava.jmeno}"
     }
-    # Renderuje šablonu 'characters/postava_detail.html' s daným kontextem
     return render(request, 'characters/postava_detail.html', context)
 
 def home_page(request):
     """
     View pro domovskou stránku.
     """
-    # Můžeš zde přidat nějaký dynamický obsah, např. počet postav, naposledy přidané apod.
-    # Prozatím jednoduchá statická stránka.
     pocet_postav = Postava.objects.count()
     context = {
         'page_title': 'Vítejte v Přehledu D&D Postav',
@@ -48,6 +65,9 @@ def postava_create(request):
         form = PostavaForm(request.POST)
         if form.is_valid():
             postava = form.save()
+            # Uložení do session pro jednorázovou zprávu
+            request.session['last_actioned_char_name'] = postava.jmeno
+            request.session['last_action_type'] = 'vytvořena'
             # messages.success(request, f"Postava '{postava.jmeno}' byla úspěšně vytvořena!")
             return redirect('characters:postava_detail', pk=postava.pk)
     else:
@@ -71,9 +91,12 @@ def postava_update(request, pk):
     if request.method == 'POST':
         form = PostavaForm(request.POST, instance=postava) # Předáme instanci postavy, aby formulář věděl, že upravujeme
         if form.is_valid():
-            form.save() # Uloží změny do existující instance postavy
+            updated_postava = form.save()
+            # Uložení do session pro jednorázovou zprávu
+            request.session['last_actioned_char_name'] = updated_postava.jmeno
+            request.session['last_action_type'] = 'aktualizována'
             # messages.success(request, f"Postava '{postava.jmeno}' byla úspěšně aktualizována!")
-            return redirect('characters:postava_detail', pk=postava.pk)
+            return redirect('characters:postava_list') # zpět na seznam
     else:
         # Pokud je to GET požadavek (první načtení stránky s formulářem pro úpravu)
         form = PostavaForm(instance=postava) # Vytvoří formulář předvyplněný daty z existující postavy
@@ -98,7 +121,13 @@ def postava_delete(request, pk):
         # Pokud uživatel potvrdil smazání (odeslal formulář metodou POST)
         jmeno_smazane_postavy = postava.jmeno # Uložíme si jméno pro zprávu
         postava.delete()
-        messages.success(request, f"Postava '{jmeno_smazane_postavy}' byla úspěšně smazána.")
+        #messages.success(request, f"Postava '{jmeno_smazane_postavy}' byla úspěšně smazána.")
+
+        # Odstranění ze seznamu naposledy prohlížených, pokud tam byla
+        recently_viewed = request.session.get('recently_viewed_characters', [])
+        recently_viewed = [char for char in recently_viewed if char['id'] != pk]
+        request.session['recently_viewed_characters'] = recently_viewed
+
         return redirect('characters:postava_list') # Přesměrujeme na seznam postav
 
     # Pokud je to GET požadavek, zobrazíme potvrzovací stránku

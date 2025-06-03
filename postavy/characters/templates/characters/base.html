@@ -59,6 +59,7 @@
         </div>
     </nav>
 
+    <!--POKUS O MESSAGES-->
     {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -79,7 +80,26 @@
 
     <footer class="footer">
         <div class="container">
-            <span>Semestrální projekt Django | {% now "Y" %}</span>
+            <div class="row">
+                <div class="col-md-6 text-md-start text-center mb-2 mb-md-0">
+                    <span>Semestrální projekt Django | {% now "Y" %}</span>
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    {% if request.session.recently_viewed_characters %}
+                        <span class="recently-viewed-title">Naposledy zobrazeno:</span>
+                        <ul class="list-inline recently-viewed-list mb-0">
+                            {% for char_info in request.session.recently_viewed_characters %}
+                                <li class="list-inline-item">
+                                    <a href="{% url 'characters:postava_detail' pk=char_info.id %}">{{ char_info.jmeno }}</a>
+                                </li>
+                                {% if not forloop.last %}<li class="list-inline-item">&middot;</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="text-muted" style="font-size: 0.85rem;">Zatím žádné nedávno zobrazené postavy.</span>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </footer>
 
