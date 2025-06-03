@@ -19,7 +19,7 @@ class Postava(models.Model):
         null=True,
         help_text="Hodnota síly postavy (1-30, volitelné)"
     )
-    #jiný typ
+    # zadání - jiný typ?
     je_aktivni = models.BooleanField(default=True, help_text="Označuje, zda je postava aktivně používána (povinné)")
 
     def __str__(self):

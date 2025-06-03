@@ -14,10 +14,13 @@ def postava_list(request):
     last_actioned_char_name = request.session.pop('last_actioned_char_name', None)
     last_action_type = request.session.pop('last_action_type', None)
 
-    postavy = Postava.objects.all().order_by('jmeno') # Získání všech postav, seřazených podle jména
+    if last_actioned_char_name and last_action_type:
+        messages.success(request, f"Postava '{last_actioned_char_name}' byla úspěšně {last_action_type}.")
+
+    postavy = Postava.objects.all().order_by('jmeno')
     context = {
         'postavy': postavy,
-        'page_title': 'Seznam D&D Postav' # Příklad předání dalšího kontextu do šablony
+        'page_title': 'Seznam D&D Postav'
     }
     # Renderuje šablonu 'characters/postava_list.html' s daným kontextem
     return render(request, 'characters/postava_list.html', context)
@@ -65,7 +68,7 @@ def postava_create(request):
         form = PostavaForm(request.POST)
         if form.is_valid():
             postava = form.save()
-            # Uložení do session pro jednorázovou zprávu
+
             request.session['last_actioned_char_name'] = postava.jmeno
             request.session['last_action_type'] = 'vytvořena'
             # messages.success(request, f"Postava '{postava.jmeno}' byla úspěšně vytvořena!")
@@ -92,7 +95,7 @@ def postava_update(request, pk):
         form = PostavaForm(request.POST, instance=postava) # Předáme instanci postavy, aby formulář věděl, že upravujeme
         if form.is_valid():
             updated_postava = form.save()
-            # Uložení do session pro jednorázovou zprávu
+
             request.session['last_actioned_char_name'] = updated_postava.jmeno
             request.session['last_action_type'] = 'aktualizována'
             # messages.success(request, f"Postava '{postava.jmeno}' byla úspěšně aktualizována!")
@@ -119,7 +122,7 @@ def postava_delete(request, pk):
 
     if request.method == 'POST':
         # Pokud uživatel potvrdil smazání (odeslal formulář metodou POST)
-        jmeno_smazane_postavy = postava.jmeno # Uložíme si jméno pro zprávu
+        # jmeno_smazane_postavy = postava.jmeno
         postava.delete()
         #messages.success(request, f"Postava '{jmeno_smazane_postavy}' byla úspěšně smazána.")
 
